@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Cotação - Nik Transportes</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+font-family:"Montserrat",sans-serif;
+}
+
+body{
+background:#0b2a44;
+padding:40px;
+}
+
+.container{
+background:#FFFFFF;
+padding:80px;
+border-radius:24px;
+max-width:1100px;
+margin:auto;
+}
+
+h3{
+font-size:18px;
+font-weight:600;
+color:#0b2a44;
+margin-bottom:20px;
+}
+
+.grid2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:60px;
+}
+
+.grid2 > div:last-child{
+border-left:1px solid #ECECEC;
+padding-left:40px;
+}
+
+.gridLine{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+}
+
+label{
+font-size:16px;
+font-weight:400;
+display:block;
+margin-bottom:5px;
+}
+
+input,select{
+width:100%;
+padding:10px 40px 10px 10px;
+border-radius:6px;
+border:1px solid #ccc;
+margin-bottom:16px;
+box-sizing:border-box;
+font-size:14px;
+}
+
+input::placeholder{
+font-size:14px;
+font-weight:400;
+}
+
+hr{
+margin:30px 0;
+}
+
+button{
+background:#ff7a00;
+color:white;
+border:none;
+padding:12px 40px;
+border-radius:6px;
+font-weight:600;
+font-size:18px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.resumo{
+display:none;
+margin-top:40px;
+background:white;
+padding:30px;
+border-radius:10px;
+}
+
+.valorBox{
+margin-top:20px;
+padding:20px;
+background:#f3f3f3;
+border-radius:8px;
+max-width:300px;
+}
+
+.total{
+font-weight:bold;
+font-size:18px;
+}
+
+.whatsapp{
+background:#25D366;
+margin-top:10px;
+}
+
+input:invalid{
+border:1px solid #ff4d4d;
+}
+
+input:focus{
+outline:none;
+border:1px solid #ff7a00;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+<!-- Dados do solicitante -->
+
+<h3>Dados do solicitante:</h3>
+
+<div class="grid2">
+
+<div>
+<label>Nome</label>
+<input id="nome" placeholder="Digite seu nome">
+
+
+<label>Telefone</label>
+<input id="telefone" placeholder="Telefone (com DDD)">
+</div>
+
+<div>
+<label>Empresa</label>
+<input id="empresa" placeholder="Digite sua empresa">
+
+<label>Email</label>
+<input id="email" placeholder="Exemplo@email.com">
+</div>
+
+</div>
+
+<hr>
+
+<div class="grid2">
+
+<div>
+
+    <!-- Informações do agendamento -->
+
+<h3>Informações do agendamento:</h3>
+
+<label>Qual veículo você precisa?</label>
+<select id="veiculo">
+<option>Moto</option>
+<option>Utilitário</option>
+</select>
+
+<label>Data da coleta</label>
+<input type="date" id="dataColeta">
+
+<label>Data da entrega</label>
+<input type="date" id="dataEntrega">
+
+</div>
+
+<div>
+
+    <!-- Informações da carga -->
+
+<h3>Informações da carga:</h3>
+
+<label>Tipo de carga</label>
+<select id="tipoCarga">
+<option>Caixa</option>
+<option>Fardo</option>
+<option>Máquina</option>
+<option>Pneu</option>
+<option>Equipamento</option>
+<option>Diversos</option>
+</select>
+
+<div class="gridLine">
+<div>
+<label>Peso aproximado</label>
+<input id="peso" type="number" placeholder="Digite o peso aproximado">
+</div>
+
+<div>
+<label>Quantidade</label>
+<input id="quantidade" type="number" placeholder="Digite a quantidade">
+</div>
+</div>
+
+<label>Dimensões</label>
+<input id="dimensoes" placeholder="Digite as dimensões da sua carga">
+
+</div>
+
+</div>
+
+<hr>
+
+<div class="grid2">
+
+<div>
+
+    <!-- Informações da coleta -->
+
+<h3>Informações da coleta:</h3>
+
+<label>Localidade</label>
+<input list="localidades" id="localidadeoleta" placeholder="Digite a localidade da coleta">
+<datalist id="localidades"></datalist>
+
+<div class="gridLine">
+<div>
+<label>Endereço</label>
+<input id="enderecoColeta" placeholder="Digite o endereço">
+</div>
+
+<div>
+<label>Complemento</label>
+<input id="complementoColeta" placeholder="Digite o complemento">
+</div>
+</div>
+
+<div class="gridLine">
+<div>
+<label>CEP</label>
+<input id="cepColeta" placeholder="Digite o CEP">
+</div>
+
+<div>
+<label>Estado</label>
+<input id="estadoColeta" placeholder="Digite o estado">
+</div>
+</div>
+
+<label>Observações</label>
+<input id="obsColeta" placeholder="Digite sua observação">
+
+<div id="paradasColeta"></div>
+
+<button type="button" onclick="adicionarParada('coleta')">
++ Adicionar parada
+</button>
+
+</div>
+
+<div>
+
+    <!-- Informações da entrega -->
+
+<h3>Informações da entrega:</h3>
+
+<label>Localidade</label>
+<input list="localidades" id="localidadeEntrega" placeholder="Digite a localidade da entrega">
+
+<div class="gridLine">
+<div>
+<label>Endereço</label>
+<input id="enderecoEntrega" placeholder="Digite o endereço">
+</div>
+
+<div>
+<label>Complemento</label>
+<input id="complementoEntrega" placeholder="Digite o complemento">
+</div>
+</div>
+
+<div class="gridLine">
+<div>
+<label>CEP</label>
+<input id="cepEntrega" placeholder="Digite o CEP">
+</div>
+
+<div>
+<label>Estado</label>
+<input id="estadoEntrega" placeholder="Digite o estado">
+</div>
+</div>
+
+<label>Observações</label>
+<input id="obsEntrega" placeholder="Digite sua observação">
+
+<div id="paradasEntrega"></div>
+
+<button type="button" onclick="adicionarParada('entrega')">
++ Adicionar parada
+</button>
+
+<br><br>
+
+<label>
+<input type="checkbox" id="retorno">
+Retornar ao local de origem
+</label>
+
+</div>
+
+</div>
+
+<hr>
+
+<center>
+<button onclick="calcular()">Fazer cotação</button>
+</center>
+
+<div class="resumo" id="resultado">
+
+    <!-- Reusmo da entrega -->
+
+<h3>Resumo da entrega</h3>
+
+<p id="coleta"></p>
+<p id="entrega"></p>
+
+<div class="valorBox">
+
+<p>Subtotal: <span id="subtotal"></span></p>
+<p>Desconto: <span style="color:green" id="desconto"></span></p>
+
+<p class="total">
+Total estimado: <span id="total"></span>
+</p>
+
+</div>
+
+<div id="whatsBox"></div>
+
+</div>
+
+</div>
+
+<script>
+
+const tabela = {
+
+"Aclimação":80,"Água Branca":85,"Alphaville":115,"Americanópolis":98,"Anália Franco":68,"Aricanduva":68,"Arthur Alvim":68,"Arujá":65,"Guarulhos":50,
+"Barra Funda":75,"Barueri":115,"Bela Vista":80,"Belenzinho":70,"Berrini":105,"Brás":70,"Brasilândia":98,"Brooklin":105,"Butantã":105,
+"Cambuci":85,"Campo Belo":105,"Cangaíba":68,"Cantareira":68,"Capão Redondo":150,"Carapicuíba":118,"Carandiru":70,"Carrão":70,"Casa Verde":78,
+"CEASA":95,"Centro-SP":75,"Cidade Ademar":120,"Cidade Patriarca":70,"Cidade Tiradentes":90,"Congonhas":105,"Cidade Dutra":160,
+"Diadema":120,"Embu das Artes":170,"Ermelino Matarazzo":68,
+"Faria Lima":105,"Ferraz de Vasconcelos":98,"Freguesia do Ó":85,
+"Grajaú":180,"Guaianazes":85,"Guarapiranga":115,
+"Horto Florestal":90,"Higienópolis":88,
+"Ibirapuera":105,"Imirim":88,"Interlagos":115,"Ipiranga":95,"Itaim Paulista":70,"Itapecerica da Serra":195,"Itapevi":180,"Itaquera":70,
+"Jabaquara":105,"Jaçanã":70,"Jaguaré":98,"Jandira":180,"Jaraguá":105,"Jardins":105,"Jardim Ângela":160,"Jardim Brasil":70,"Jardim Japão":70,
+"Jardim Paulista":95,"Jardim São Luiz":115,"Jurubatuba":115,
+"Lapa":90,"Largo do Socorro":115,"Liberdade":78,"Limão":75,"Luz":70,
+"Mandaqui":80,"Mauá":120,"Mogi das Cruzes":160,"Mooca":70,"Morumbi":110,
+"Osasco":110,
+"Pacaembu":68,"Parada Inglesa":68,"Parada de Taipas":140,"Paraíso":85,"Pari":70,"Pedreira":140,"Penha":70,"Perdizes":85,"Pinheiros":105,
+"Piqueri":90,"Planalto Paulista":105,"Poá":110,"Pompeia":90,"Ponte Rasa":70,"Parque São Domingos":90,"Parque do Carmo":75,
+"Parque Novo Mundo":70,"Parque São Lucas":98,"Praça da Sé":75,
+"Ribeirão Pires":170,"Rio Pequeno":98,
+"Sacomã":98,"Santa Cecília":75,"Santana":75,"Santo Amaro":110,"Santo André":120,"São Bernardo":120,"São Caetano":120,
+"São Mateus":110,"São Miguel":68,"Sapopemba":75,"Saúde":110,"Socorro":110,"Sumaré":98,"Suzano":110,
+"Tatuapé":70,"Tremembé":85,"Tucuruvi":70,
+"Vila Alpina":90,"Vila Anastácio":98,"Vila Formosa":70,"Vila Guilherme":70,"Vila Leopoldina":90,"Vila Madalena":105,
+"Vila Maria":70,"Vila Mariana":105,"Vila Matilde":70,"Vila Medeiros":70,"Vila Olímpia":105,"Vila Santa Catarina":115,
+"Vila Sônia":120,"Vila Alexandria":115,
+"Taboão da Serra":150,"Cotia":180
+
+};
+
+const lista = document.getElementById("localidades");
+
+Object.keys(tabela).sort().forEach(localidade=>{
+let option=document.createElement("option");
+option.value=localidade;
+lista.appendChild(option);
+});
+
+let option=document.createElement("option");
+option.value="Outros";
+lista.appendChild(option);
+
+let contadorParadas = {
+coleta:0,
+entrega:0
+};
+
+function adicionarParada(tipo){
+
+contadorParadas[tipo]++;
+
+let container = document.getElementById(
+tipo === "coleta" ? "paradasColeta" : "paradasEntrega"
+);
+
+let bloco = document.createElement("div");
+
+bloco.style.marginTop="15px";
+
+bloco.innerHTML = `
+
+<div style="background:#fafafa;padding:15px;border-radius:8px;margin-top:10px">
+
+<b>Parada ${contadorParadas[tipo]}</b>
+
+<div class="gridLine">
+
+<div>
+<label>Endereço</label>
+<input class="parada-${tipo}-endereco">
+</div>
+
+<div>
+<label>Localidade</label>
+<input class="parada-${tipo}-localidade">
+</div>
+
+</div>
+
+<div class="gridLine">
+
+<div>
+<label>CEP</label>
+<input>
+</div>
+
+<div>
+<label>Estado</label>
+<input>
+</div>
+
+</div>
+
+<button type="button" onclick="this.parentElement.remove()">
+Remover parada
+</button>
+
+</div>
+
+`;
+
+container.appendChild(bloco);
+
+}
+
+function verificarCampos(){
+
+let campos = [
+"nome",
+"telefone",
+"peso",
+"localidadeColeta",
+"enderecoColeta",
+"localidadeEntrega",
+"enderecoEntrega"
+];
+
+for(let campo of campos){
+
+let input = document.getElementById(campo);
+
+if(!input.value.trim()){
+
+alert("Por favor preencha o campo: "+campo);
+
+input.focus();
+
+return false;
+
+}
+
+}
+
+return true;
+
+}
+
+function calcular(){
+
+if(!verificarCampos()){
+return;
+}
+
+let localidade = document.getElementById("localidadeEntrega").value;
+let peso = Number(document.getElementById("peso").value);
+let retorno = document.getElementById("retorno").checked;
+
+let resultado = document.getElementById("resultado");
+resultado.style.display="block";
+
+/* VERIFICAR LOCALIDADE */
+
+if(localidade==="Outros" || !tabela[localidade]){
+
+document.getElementById("whatsBox").innerHTML =
+'<p>Localidade fora da tabela.</p><a href="https://wa.me/5511999999999"><button class="whatsapp">Solicitar cotação no WhatsApp</button></a>';
+
+return;
+
+}
+
+/* BASE DA TABELA */
+
+let base = tabela[localidade];
+
+/* CALCULO DO PESO */
+
+let subtotal;
+
+if(peso<=20){
+subtotal = base;
+}else{
+subtotal = base * 1.5;
+}
+
+/* CONTAR PARADAS */
+
+let paradasColeta = document.querySelectorAll("#paradasColeta > div").length;
+let paradasEntrega = document.querySelectorAll("#paradasEntrega > div").length;
+
+let totalParadas = paradasColeta + paradasEntrega;
+
+/* CALCULO DAS PARADAS */
+
+let valorParadas = base * 0.2 * totalParadas;
+
+subtotal = subtotal + valorParadas;
+
+/* DESCONTO */
+
+let desconto = subtotal * 0.2;
+
+let total = subtotal - desconto;
+
+/* RETORNO */
+
+if(retorno){
+total = total * 2;
+}
+
+/* ENDEREÇOS */
+
+document.getElementById("coleta").innerText =
+document.getElementById("enderecoColeta").value+" - "+document.getElementById("localidadeColeta").value;
+
+document.getElementById("entrega").innerText =
+document.getElementById("enderecoEntrega").value+" - "+localidade;
+
+/* VALORES */
+
+document.getElementById("subtotal").innerText = "R$ "+subtotal.toFixed(2);
+document.getElementById("desconto").innerText = "- R$ "+desconto.toFixed(2);
+document.getElementById("total").innerText = "R$ "+total.toFixed(2);
+
+}
+
+
+</script>
+
+</body>
+</html>
