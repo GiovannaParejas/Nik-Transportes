@@ -122,14 +122,15 @@ background:#fafafa;
 }
 
 .infoBox p{
-font-size:14px;
+font-size:22px;
+font-weight:600;
 margin:0 0 5px 0;
-color:#666;
+color:#1B3653;
 }
 
 .infoBox span{
-font-weight:600;
-color:#0b2a44;
+font-weight:500;
+color:#3A3F45;
 }
 
 .total{
@@ -457,6 +458,12 @@ font-size:16px;
 
 <h3>Resumo da entrega</h3>
 
+<p><b>Endereço(s) de coleta:</b></p>
+<p id="coleta"></p>
+
+<p><b>Endereço(s) de entrega:</b></p>
+<p id="entrega"></p>
+
 <div class="infoResumo">
 
 <div class="infoBox">
@@ -476,16 +483,10 @@ font-size:16px;
 
 </div>
 
-<p><b>Endereço de coleta(s):</b></p>
-<p id="coleta"></p>
-
-<p><b>Endereço de entrega(s):</b></p>
-<p id="entrega"></p>
-
 <div class="valorBox">
 
 <p>Subtotal: <span id="subtotal"></span></p>
-<p>Desconto: <span style="color:green" id="desconto"></span></p>
+<p>Desconto: <span style="color:#02B302" id="desconto"></span></p>
 
 <p class="total">
 Total estimado: <span id="total"></span>
@@ -506,7 +507,7 @@ const tabela = {
 "Aclimação":80,"Água Branca":85,"Alphaville":115,"Americanópolis":98,"Anália Franco":68,"Aricanduva":68,"Arthur Alvim":68,"Arujá":65,"Guarulhos":50,
 "Barra Funda":75,"Barueri":115,"Bela Vista":80,"Belenzinho":70,"Berrini":105,"Brás":70,"Brasilândia":98,"Brooklin":105,"Butantã":105,
 "Cambuci":85,"Campo Belo":105,"Cangaíba":68,"Cantareira":68,"Capão Redondo":150,"Carapicuíba":118,"Carandiru":70,"Carrão":70,"Casa Verde":78,
-"CEASA":95,"Centro-SP":75,"Cidade Ademar":120,"Cidade Patriarca":70,"Cidade Tiradentes":90,"Congonhas":105,"Cidade Dutra":160,
+"Ceasa":95,"Centro-SP":75,"Cidade Ademar":120,"Cidade Patriarca":70,"Cidade Tiradentes":90,"Congonhas":105,"Cidade Dutra":160,
 "Diadema":120,"Embu das Artes":170,"Ermelino Matarazzo":68,
 "Faria Lima":105,"Ferraz de Vasconcelos":98,"Freguesia do Ó":85,
 "Grajaú":180,"Guaianazes":85,"Guarapiranga":115,
@@ -562,20 +563,22 @@ bloco.style.marginTop="15px";
 
 bloco.innerHTML = `
 
-<div style="background:#fafafa;padding:15px;border-radius:8px;margin-top:10px">
+<div style="background:#fafafa;padding:20px;border-radius:8px;margin-top:10px">
 
 <b>Parada ${contadorParadas[tipo]}</b>
+
+<input list="localidades" class="parada-${tipo}-localidade paradaObrigatoria" placeholder="Digite a localidade">
 
 <div class="gridLine">
 
 <div>
 <label>Endereço</label>
-<input class="parada-${tipo}-endereco">
+<input class="parada-${tipo}-endereco paradaObrigatoria" placeholder="Digite o endereço">
 </div>
 
 <div>
-<label>Localidade</label>
-<input class="parada-${tipo}-localidade">
+<label>Complemento</label>
+<input class="paradaObrigatoria" placeholder="Digite o complemento">
 </div>
 
 </div>
@@ -584,17 +587,20 @@ bloco.innerHTML = `
 
 <div>
 <label>CEP</label>
-<input>
+<input class="paradaObrigatoria" placeholder="Digite o CEP">
 </div>
 
 <div>
 <label>Estado</label>
-<input>
+<input class="paradaObrigatoria" placeholder="Digite o estado">
 </div>
 
 </div>
 
-<button type="button" onclick="this.parentElement.remove()">
+<label>Observações</label>
+<input placeholder="Digite sua observação">
+
+<button type="button" onclick="this.parentElement.remove()" style="margin-top:10px">
 Remover parada
 </button>
 
@@ -608,42 +614,32 @@ container.appendChild(bloco);
 
 function verificarCampos(){
 
-let campos = [
-"nome",
-"telefone",
-"email",
+if(!document.getElementById("enderecoColeta").value){
+alert("Preencha o endereço de coleta");
+return false;
+}
 
-"dataColeta",
-"dataEntrega",
+if(!document.getElementById("enderecoEntrega").value){
+alert("Preencha o endereço de entrega");
+return false;
+}
 
-"peso",
-"quantidade",
-"dimensoes",
+if(!document.getElementById("peso").value){
+alert("Preencha o peso");
+return false;
+}
 
-"localidadeColeta",
-"enderecoColeta",
-"complementoColeta",
-"cepColeta",
-"estadoColeta",
-"obsColeta",
+/* validação das paradas */
 
-"localidadeEntrega",
-"enderecoEntrega",
-"complementoEntrega",
-"cepEntrega",
-"estadoEntrega",
-"obsEntrega"
-];
+let paradas = document.querySelectorAll(".paradaObrigatoria");
 
-for(let campo of campos){
+for(let campo of paradas){
 
-let input = document.getElementById(campo);
+if(!campo.value.trim()){
 
-if(!input.value.trim()){
+alert("Por favor preencha todos os campos das paradas.");
 
-alert("Por favor preencha o campo: " + input.previousElementSibling.innerText);
-
-input.focus();
+campo.focus();
 
 return false;
 
@@ -652,6 +648,14 @@ return false;
 }
 
 return true;
+
+}
+
+function formatarData(data){
+
+let partes = data.split("-");
+
+return partes[2] + "/" + partes[1] + "/" + partes[0];
 
 }
 
@@ -667,6 +671,17 @@ let retorno = document.getElementById("retorno").checked;
 
 let resultado = document.getElementById("resultado");
 resultado.style.display="block";
+
+/* PREENCHER RESUMO SUPERIOR */
+
+document.getElementById("resumoVeiculo").innerText =
+document.getElementById("veiculo").value;
+
+let dataColeta = document.getElementById("dataColeta").value;
+let dataEntrega = document.getElementById("dataEntrega").value;
+
+document.getElementById("resumoDataColeta").innerText = formatarData(dataColeta);
+document.getElementById("resumoDataEntrega").innerText = formatarData(dataEntrega);
 
 /* VERIFICAR LOCALIDADE */
 
@@ -718,18 +733,26 @@ if(retorno){
 total = total * 2;
 }
 
-/* ENDEREÇOS */
+/* ENDEREÇOS COM PARADAS */
 
 let coleta = document.getElementById("enderecoColeta").value+" - "+document.getElementById("localidadeColeta").value;
 
-document.querySelectorAll(".parada-coleta-endereco").forEach(e=>{
-coleta += "<br>"+e.value;
+document.querySelectorAll(".parada-coleta-endereco").forEach((e,i)=>{
+
+let local = document.querySelectorAll(".parada-coleta-localidade")[i];
+
+coleta += "<br>"+e.value+" - "+local.value;
+
 });
 
 let entrega = document.getElementById("enderecoEntrega").value+" - "+localidade;
 
-document.querySelectorAll(".parada-entrega-endereco").forEach(e=>{
-entrega += "<br>"+e.value;
+document.querySelectorAll(".parada-entrega-endereco").forEach((e,i)=>{
+
+let local = document.querySelectorAll(".parada-entrega-localidade")[i];
+
+entrega += "<br>"+e.value+" - "+local.value;
+
 });
 
 document.getElementById("coleta").innerHTML = coleta;
