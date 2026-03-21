@@ -947,7 +947,7 @@ if(!verificarCampos()){
 return;
 }
 
-/* REGRA DAS 16:59 */
+/* REGRA DAS 17h */
 
 let dataInput = document.getElementById("dataColeta");
 let dataEntregaInput = document.getElementById("dataEntrega");
@@ -957,13 +957,13 @@ let dataSelecionada = dataInput.value;
 let agora = new Date();
 let hoje = agora.toISOString().split("T")[0];
 
-// converte hora atual para minutos (ex: 16:59 = 1019)
+// converte hora atual para minutos
 let horaAtualMin = agora.getHours() * 60 + agora.getMinutes();
-let limiteMin = 16 * 60 + 59;
+let limiteMin = 17 * 60;
 
 if(dataSelecionada === hoje && horaAtualMin >= limiteMin){
 
-alert("Coletas após as 16:59 serão realizadas no próximo dia.");
+alert("Coletas após as 17h serão realizadas no próximo dia.");
 
 let amanha = new Date();
 amanha.setDate(amanha.getDate() + 1);
@@ -1013,7 +1013,7 @@ document.getElementById("resumoDataEntrega").innerText = formatarData(dataEntreg
 if(localidade==="Outros" || !tabela[localidade]){
 
 document.getElementById("whatsBox").innerHTML =
-'<p>Localidade fora da tabela.</p><a href="https://wa.me/5511999999999"><button class="whatsapp">Solicitar cotação no WhatsApp</button></a>';
+'<p>Localidade fora da tabela.</p><a href="https://wa.me/551124460812?text=Olá!%20Gostaria%20de%20fazer%20uma%20entrega%20econômica%20fora%20de%20São%20Paulo."><button class="whatsapp">Solicitar cotação no WhatsApp</button></a>';
 
 return;
 
