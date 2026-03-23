@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cotação - Nik Transportes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        * {
+            font-family: "Montserrat", sans-serif;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: #FFFFFF;
+            padding: 80px;
+            border-radius: 24px;
+            max-width: 1100px;
+            margin: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0b2a44;
+            margin-bottom: 20px;
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            position: relative;
+        }
+
+        .grid2::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 1px;
+            background: #DEDEDE;
+            transform: translateX(-50%);
+        }
+
+        .semLinha::before {
+            display: none;
+        }
+
+        .semLinha>div:last-child {
+            border-left: none;
+            padding-left: 0;
+        }
+
+        .gridLine {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 400;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px 35px 10px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        select {
+            background: linear-gradient(45deg, transparent 50%, #000 50%),
+                linear-gradient(135deg, #000 50%, transparent 50%);
+            background-position: calc(100% - 15px) center,
+                calc(100% - 10px) center;
+            background-size: 5px 5px, 5px 5px;
+            background-repeat: no-repeat;
+        }
+
+        input[list] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+
+            background-color: #fff;
+
+            background-image: linear-gradient(45deg, transparent 50%, #000 50%),
+                linear-gradient(135deg, #000 50%, transparent 50%);
+            background-position: calc(100% - 15px) center,
+                calc(100% - 10px) center;
+            background-size: 5px 5px, 5px 5px;
+            background-repeat: no-repeat;
+
+            padding-right: 35px;
+        }
+
+        input[list]::-webkit-calendar-picker-indicator {
+            opacity: 0;
+            display: none;
+        }
+
+        input::placeholder {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background: #DEDEDE;
+            margin: 30px 0;
+        }
+
+        button:not(.addParada) {
+            background: #ff7a00;
+            color: white;
+            border: 2px solid transparent;
+            padding: 12px 40px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:not(.addParada):hover {
+            background: #fff;
+            color: #ff7a00;
+            border: 2px solid #ff7a00;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .parada-bloco button {
+            display: block;
+            margin: 15px auto 0 auto;
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
+        .resumo {
+            display: none;
+            margin: 40px auto;
+            background: #F8F9FB;
+            padding: 60px 40px;
+            border-radius: 16px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .resumo h3 {
+            font-size: 32px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 0;
+        }
+
+        .resumo p {
+            margin: 0;
+        }
+
+        .resumo .enderecos {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .valorBox {
+            margin: 20px auto;
+            padding: 20px;
+            background: #f3f3f3;
+            border-radius: 8px;
+            max-width: 300px;
+            text-align: center;
+            margin-bottom: 0;
+
+        }
+
+        .infoResumo {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .infoBox {
+            flex: 1;
+            min-width: 150px;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            background: #ffffff;
+        }
+
+        .infoBox p {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            color: #1B3653;
+        }
+
+        .infoBox span {
+            font-weight: 500;
+            color: #3A3F45;
+        }
+
+        .valorBox {
+            margin: 0 auto;
+            padding: 25px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .valorBox .titulo {
+            color: #1B3653;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .valorLinha {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .divisor {
+            border-top: 1px solid #DEDEDE;
+            margin: 15px 0;
+        }
+
+        .total {
+            font-weight: 700;
+            font-size: 25px;
+            color: #3A3F45;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .whatsapp {
+            background: #25D366;
+            margin-top: 10px;
+        }
+
+        input:invalid {
+            border: 1px solid #ff4d4d;
+        }
+
+        input:focus {
+            outline: none;
+            border: 1px solid #ff7a00;
+        }
+
+        .checkboxRetorno {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .checkboxRetorno input {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            padding: 0;
+            flex-shrink: 0;
+            accent-color: #ff7a00;
+        }
+
+        .checkboxRetorno span {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .addParada {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: #3A3F45;
+            cursor: pointer;
+        }
+
+        .addParada:hover {
+            text-decoration: underline;
+        }
+
+        .resumo,
+        .infoBox,
+        .valorBox {
+            box-shadow: 0 10px 30px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        .enderecoBox {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        .enderecoBox p {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #coleta,
+        #entrega {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tituloEndereco {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1B3653;
+            margin-bottom: 10px;
+            padding-bottom: 15px;
+        }
+
+        input[type="date"],
+        select {
+            position: relative;
+            padding-right: 35px;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        /* ============================= */
+        /* RESPONSIVO PARA ELEMENTOR */
+        /* ============================= */
+
+        /* Desktop grande */
+        @media (max-width:1200px) {
+
+            .container {
+                max-width: 95%;
+                padding: 60px 40px;
+            }
+
+        }
+
+        /* Tablet */
+        @media (max-width:1024px) {
+
+            .container {
+                padding: 40px 25px;
+                border-radius: 18px;
+            }
+
+            .grid2 {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .grid2::before {
+                display: none;
+            }
+
+            .gridLine {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .infoResumo {
+                flex-direction: column;
+            }
+
+            .infoBox {
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .resumo {
+                padding: 40px 25px;
+            }
+
+        }
+
+        /* Mobile */
+        @media (max-width:767px) {
+
+            .container {
+                padding: 25px 18px;
+                border-radius: 14px;
+            }
+
+            h3 {
+                font-size: 16px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            input,
+            select {
+                font-size: 14px;
+                padding: 12px 35px 12px 12px;
+            }
+
+            .grid2 {
+                gap: 25px;
+            }
+
+            .gridLine {
+                gap: 10px;
+            }
+
+            button:not(.addParada) {
+                font-size: 16px;
+                padding: 14px;
+            }
+
+            .addParada {
+                font-size: 14px;
+            }
+
+            /* resumo */
+            .resumo {
+                padding: 25px 15px;
+            }
+
+            .resumo h3 {
+                font-size: 22px;
+            }
+
+            /* cards */
+            .infoResumo {
+                gap: 10px;
+            }
+
+            .infoBox {
+                padding: 15px;
+            }
+
+            .valorBox {
+                padding: 20px;
+            }
+
+            .valorBox .titulo {
+                font-size: 20px;
+            }
+
+            .total {
+                font-size: 20px;
+            }
+
+        }
+
+        /* Mobile pequeno */
+        @media (max-width:480px) {
+
+            .container {
+                padding: 20px 12px;
+            }
+
+            .resumo {
+                padding: 20px 10px;
+            }
+
+            .valorBox {
+                padding: 15px;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+    <!-- Dados do solicitante -->
+
+    <h3>Dados do solicitante:</h3>
+
+    <div class="grid2 semLinha">
+
+        <div>
+            <label>Nome</label>
+            <input id="nome" placeholder="Digite seu nome">
+
+
+            <label>Telefone</label>
+            <input id="telefone" placeholder="Telefone (com DDD)">
+        </div>
+
+        <div>
+            <label>Empresa</label>
+            <input id="empresa" placeholder="Digite sua empresa">
+
+            <label>Email</label>
+            <input id="email" placeholder="Exemplo@email.com">
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="grid2">
+
+        <div>
+
+            <!-- Informações do agendamento -->
+
+            <h3>Informações do agendamento:</h3>
+
+            <label>Qual veículo você precisa?</label>
+            <select id="veiculo">
+                <option>Moto</option>
+                <option>Utilitário</option>
+            </select>
+
+            <label>Data da coleta</label>
+            <input type="date" id="dataColeta">
+
+            <label>Data da entrega</label>
+            <input type="date" id="dataEntrega">
+
+        </div>
+
+        <div>
+
+            <!-- Informações da carga -->
+
+            <h3>Informações da carga:</h3>
+
+            <label>Tipo de carga</label>
+            <select id="tipoCarga">
+                <option>Caixa</option>
+                <option>Fardo</option>
+                <option>Máquina</option>
+                <option>Pneu</option>
+                <option>Equipamento</option>
+                <option>Diversos</option>
+            </select>
+
+            <div class="gridLine">
+                <div>
+                    <label>Peso aproximado (kg)</label>
+                    <input id="peso" type="number" min="0" oninput="this.value = Math.abs(this.value)"
+                        placeholder="Digite o peso">
+                </div>
+
+                <div>
+                    <label>Quantidade</label>
+                    <input id="quantidade" type="number" min="0" oninput="this.value = Math.abs(this.value)"
+                        placeholder="Digite a quantidade">
+                </div>
+            </div>
+
+            <label>Dimensões</label>
+            <input id="dimensoes" placeholder="Digite as dimensões da sua carga">
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="grid2">
+
+        <div>
+
+            <!-- Informações da coleta -->
+
+            <h3>Informações da coleta:</h3>
+
+            <label>Localidade</label>
+            <input list="localidades" id="localidadeColeta" placeholder="Selecione a localidade da coleta">
+            <datalist id="localidades"></datalist>
+
+            <div class="gridLine">
+                <div>
+                    <label>Endereço</label>
+                    <input id="enderecoColeta" placeholder="Digite o endereço">
+                </div>
+
+                <div>
+                    <label>Complemento</label>
+                    <input id="complementoColeta" placeholder="Digite o complemento">
+                </div>
+            </div>
+
+            <div class="gridLine">
+                <div>
+                    <label>CEP</label>
+                    <input id="cepColeta" placeholder="Digite o CEP">
+                </div>
+
+                <div>
+                    <label>Estado</label>
+                    <input id="estadoColeta" placeholder="Digite o estado">
+                </div>
+            </div>
+
+            <label>Observações</label>
+            <input id="obsColeta" placeholder="Digite sua observação">
+
+            <div id="paradasColeta"></div>
+
+            <button type="button" class="addParada" onclick="adicionarParada('coleta')">
+                + Adicionar parada
+            </button>
+
+        </div>
+
+        <div>
+
+            <!-- Informações da entrega -->
+
+            <h3>Informações da entrega:</h3>
+
+            <label>Localidade</label>
+            <input list="localidades" id="localidadeEntrega" placeholder="Selecione a localidade da entrega">
+
+            <div class="gridLine">
+                <div>
+                    <label>Endereço</label>
+                    <input id="enderecoEntrega" placeholder="Digite o endereço">
+                </div>
+
+                <div>
+                    <label>Complemento</label>
+                    <input id="complementoEntrega" placeholder="Digite o complemento">
+                </div>
+            </div>
+
+            <div class="gridLine">
+                <div>
+                    <label>CEP</label>
+                    <input id="cepEntrega" placeholder="Digite o CEP">
+                </div>
+
+                <div>
+                    <label>Estado</label>
+                    <input id="estadoEntrega" placeholder="Digite o estado">
+                </div>
+            </div>
+
+            <label>Observações</label>
+            <input id="obsEntrega" placeholder="Digite sua observação">
+
+            <div id="paradasEntrega"></div>
+
+            <button type="button" class="addParada" onclick="adicionarParada('entrega')">
+                + Adicionar parada
+            </button>
+
+            <br><br>
+
+            <label class="checkboxRetorno">
+                <input type="checkbox" id="retorno">
+                <span>Retornar ao local de origem</span>
+            </label>
+
+        </div>
+
+    </div>
+
+    <center>
+        <button onclick="calcular()" style="margin-top:50px;">Fazer cotação</button>
+    </center>
+
+    <div class="resumo" id="resultado">
+
+        <h3>Resumo da sua entrega econômica</h3>
+
+        <div class="enderecos">
+
+            <div class="enderecoBox">
+                <p class="tituloEndereco">Endereço(s) de coleta</p>
+                <p id="coleta"></p>
+            </div>
+
+            <div class="enderecoBox">
+                <p class="tituloEndereco">Endereço(s) de entrega</p>
+                <p id="entrega"></p>
+            </div>
+
+        </div>
+
+        <div class="infoResumo">
+
+            <div class="infoBox">
+                <p>Veículo</p>
+                <span id="resumoVeiculo"></span>
+            </div>
+
+            <div class="infoBox">
+                <p>Coleta</p>
+                <span id="resumoDataColeta"></span>
+            </div>
+
+            <div class="infoBox">
+                <p>Entrega</p>
+                <span id="resumoDataEntrega"></span>
+            </div>
+
+        </div>
+
+        <div class="valorBox">
+
+            <div class="titulo">Valor estimado</div>
+
+            <div class="valorLinha">
+                <span>Subtotal:</span>
+                <span id="subtotal"></span>
+            </div>
+
+            <div class="valorLinha" id="linhaRetorno" style="display:none;">
+                <span>Retorno ao local de origem:</span>
+                <span id="valorRetorno"></span>
+            </div>
+
+            <div class="valorLinha">
+                <span>Desconto:</span>
+                <span id="desconto" style="color:#02B302"></span>
+            </div>
+
+            <div class="divisor"></div>
+
+            <div class="total">
+                <span>Total Estimado:</span>
+                <span id="total"></span>
+            </div>
+
+        </div>
+
+        <center>
+<button id="btnConfirmar" style="margin-top:40px; display:none;">
+Agendar entrega econômica
+</button>
+</center>
+
+        <div id="whatsBox"></div>
+
+    </div>
+
+
+</div>
+
+<script>
+
+    const tabela = {
+
+        "Aclimação": 80, "Água Branca": 85, "Alphaville": 115, "Americanópolis": 98, "Anália Franco": 68, "Aricanduva": 68, "Arthur Alvim": 68, "Arujá": 65, "Guarulhos": 50,
+        "Barra Funda": 75, "Barueri": 115, "Bela Vista": 80, "Belenzinho": 70, "Berrini": 105, "Brás": 70, "Brasilândia": 98, "Brooklin": 105, "Butantã": 105,
+        "Cambuci": 85, "Campo Belo": 105, "Cangaíba": 68, "Cantareira": 68, "Capão Redondo": 150, "Carapicuíba": 118, "Carandiru": 70, "Carrão": 70, "Casa Verde": 78,
+        "Ceasa": 95, "Centro-SP": 75, "Cidade Ademar": 120, "Cidade Patriarca": 70, "Cidade Tiradentes": 90, "Congonhas": 105, "Cidade Dutra": 160,
+        "Diadema": 120, "Embu das Artes": 170, "Ermelino Matarazzo": 68,
+        "Faria Lima": 105, "Ferraz de Vasconcelos": 98, "Freguesia do Ó": 85,
+        "Grajaú": 180, "Guaianazes": 85, "Guarapiranga": 115,
+        "Horto Florestal": 90, "Higienópolis": 88,
+        "Ibirapuera": 105, "Imirim": 88, "Interlagos": 115, "Ipiranga": 95, "Itaim Paulista": 70, "Itapecerica da Serra": 195, "Itapevi": 180, "Itaquera": 70,
+        "Jabaquara": 105, "Jaçanã": 70, "Jaguaré": 98, "Jandira": 180, "Jaraguá": 105, "Jardins": 105, "Jardim Ângela": 160, "Jardim Brasil": 70, "Jardim Japão": 70,
+        "Jardim Paulista": 95, "Jardim São Luiz": 115, "Jurubatuba": 115,
+        "Lapa": 90, "Largo do Socorro": 115, "Liberdade": 78, "Limão": 75, "Luz": 70,
+        "Mandaqui": 80, "Mauá": 120, "Mogi das Cruzes": 160, "Mooca": 70, "Morumbi": 110,
+        "Osasco": 110,
+        "Pacaembu": 68, "Parada Inglesa": 68, "Parada de Taipas": 140, "Paraíso": 85, "Pari": 70, "Pedreira": 140, "Penha": 70, "Perdizes": 85, "Pinheiros": 105,
+        "Piqueri": 90, "Planalto Paulista": 105, "Poá": 110, "Pompeia": 90, "Ponte Rasa": 70, "Parque São Domingos": 90, "Parque do Carmo": 75,
+        "Parque Novo Mundo": 70, "Parque São Lucas": 98, "Praça da Sé": 75,
+        "Ribeirão Pires": 170, "Rio Pequeno": 98,
+        "Sacomã": 98, "Santa Cecília": 75, "Santana": 75, "Santo Amaro": 110, "Santo André": 120, "São Bernardo": 120, "São Caetano": 120,
+        "São Mateus": 110, "São Miguel": 68, "Sapopemba": 75, "Saúde": 110, "Socorro": 110, "Sumaré": 98, "Suzano": 110,
+        "Tatuapé": 70, "Tremembé": 85, "Tucuruvi": 70,
+        "Vila Alpina": 90, "Vila Anastácio": 98, "Vila Formosa": 70, "Vila Guilherme": 70, "Vila Leopoldina": 90, "Vila Madalena": 105,
+        "Vila Maria": 70, "Vila Mariana": 105, "Vila Matilde": 70, "Vila Medeiros": 70, "Vila Olímpia": 105, "Vila Santa Catarina": 115,
+        "Vila Sônia": 120, "Vila Alexandria": 115,
+        "Taboão da Serra": 150, "Cotia": 180
+
+    };
+
+    const lista = document.getElementById("localidades");
+
+    Object.keys(tabela).sort().forEach(localidade => {
+        let option = document.createElement("option");
+        option.value = localidade;
+        lista.appendChild(option);
+    });
+
+    let option = document.createElement("option");
+    option.value = "Outros";
+    lista.appendChild(option);
+
+    let contadorParadas = {
+        coleta: 0,
+        entrega: 0
+    };
+
+    function adicionarParada(tipo) {
+
+        let container = document.getElementById(
+            tipo === "coleta" ? "paradasColeta" : "paradasEntrega"
+        );
+
+        let bloco = document.createElement("div");
+
+        bloco.style.marginTop = "15px";
+
+        bloco.innerHTML = `
+
+<div class="parada-bloco" style="background:#fafafa;padding:20px;border-radius:8px;margin-top:10px">
+
+<b>Parada</b>
+
+<input list="localidades" class="parada-${tipo}-localidade paradaObrigatoria" placeholder="Selecione a localidade">
+
+<div class="gridLine">
+
+<div>
+<label>Endereço</label>
+<input class="parada-${tipo}-endereco paradaObrigatoria" placeholder="Digite o endereço">
+</div>
+
+<div>
+<label>Complemento</label>
+<input class="paradaObrigatoria" placeholder="Digite o complemento">
+</div>
+
+</div>
+
+<div class="gridLine">
+
+<div>
+<label>CEP</label>
+<input class="paradaObrigatoria" placeholder="Digite o CEP">
+</div>
+
+<div>
+<label>Estado</label>
+<input class="paradaObrigatoria" placeholder="Digite o estado">
+</div>
+
+</div>
+
+<label>Observações</label>
+<input placeholder="Digite sua observação">
+
+<button type="button" onclick="removerParada(this, '${tipo}')" style="margin-top:10px">
+Remover parada
+</button>
+
+</div>
+
+`;
+
+        container.appendChild(bloco);
+
+        atualizarNumeracao(tipo);
+
+    }
+
+    function verificarCampos() {
+
+        if (!document.getElementById("enderecoColeta").value) {
+            alert("Preencha o endereço de coleta");
+            return false;
+        }
+
+        if (!document.getElementById("enderecoEntrega").value) {
+            alert("Preencha o endereço de entrega");
+            return false;
+        }
+
+        if (!document.getElementById("peso").value) {
+            alert("Preencha o peso");
+            return false;
+        }
+
+        if (!document.getElementById("dataColeta").value) {
+            alert("Preencha a data de coleta");
+            return false;
+        }
+
+        if (!document.getElementById("dataEntrega").value) {
+            alert("Preencha a data de entrega");
+            return false;
+        }
+
+        /* validação das paradas */
+
+        let paradas = document.querySelectorAll(".paradaObrigatoria");
+
+        for (let campo of paradas) {
+
+            if (!campo.value.trim()) {
+
+                alert("Por favor preencha todos os campos das paradas.");
+
+                campo.focus();
+
+                return false;
+
+            }
+
+        }
+
+        return true;
+
+    }
+
+    function formatarData(data) {
+
+        let partes = data.split("-");
+
+        return partes[2] + "/" + partes[1] + "/" + partes[0];
+
+    }
+
+    function calcular() {
+
+            document.getElementById("btnConfirmar").style.display = "none";
+
+        if (!verificarCampos()) {
+            return;
+        }
+        
+
+        /* REGRA DAS 17h */
+
+        let dataInput = document.getElementById("dataColeta");
+        let dataEntregaInput = document.getElementById("dataEntrega");
+
+        let dataSelecionada = dataInput.value;
+
+        let agora = new Date();
+        let hoje = agora.toISOString().split("T")[0];
+
+        let horaAtualMin = agora.getHours() * 60 + agora.getMinutes();
+        let limiteMin = 17 * 60;
+
+        if (dataSelecionada === hoje && horaAtualMin >= limiteMin) {
+
+            alert("Coletas após as 17h serão realizadas no próximo dia.");
+
+            let amanha = new Date();
+            amanha.setDate(amanha.getDate() + 1);
+
+            let ano = amanha.getFullYear();
+            let mes = String(amanha.getMonth() + 1).padStart(2, '0');
+            let dia = String(amanha.getDate()).padStart(2, '0');
+
+            let novaData = `${ano}-${mes}-${dia}`;
+
+            dataInput.value = novaData;
+            dataEntregaInput.value = novaData;
+        }
+
+        /* GARANTIR ENTREGA >= COLETA */
+
+        let dataColeta = dataInput.value;
+        let dataEntrega = dataEntregaInput.value;
+
+        if (dataEntrega < dataColeta) {
+            dataEntregaInput.value = dataColeta;
+            dataEntrega = dataColeta;
+        }
+
+        /* LOCALIDADES */
+
+        let localidadeColeta = document.getElementById("localidadeColeta").value;
+        let localidadeEntrega = document.getElementById("localidadeEntrega").value;
+
+        let resultado = document.getElementById("resultado");
+
+        /* VALIDAÇÃO DAS LOCALIDADES */
+
+        let erroLocalidade = false;
+
+        /* valida coleta e entrega */
+        if (
+            localidadeColeta === "Outros" || !tabela[localidadeColeta] ||
+            localidadeEntrega === "Outros" || !tabela[localidadeEntrega]
+        ) {
+            erroLocalidade = true;
+        }
+
+        /* valida paradas de coleta */
+        document.querySelectorAll(".parada-coleta-localidade").forEach(input => {
+            if (input.value === "Outros" || !tabela[input.value]) {
+                erroLocalidade = true;
+            }
+        });
+
+        /* valida paradas de entrega */
+        document.querySelectorAll(".parada-entrega-localidade").forEach(input => {
+            if (input.value === "Outros" || !tabela[input.value]) {
+                erroLocalidade = true;
+            }
+        });
+
+        /* SE DEU ERRO EM QUALQUER UMA */
+        if (erroLocalidade) {
+
+            document.querySelector("#resultado h3").style.display = "none";
+
+            document.querySelector(".enderecos").style.display = "none";
+            document.querySelector(".infoResumo").style.display = "none";
+            document.querySelector(".valorBox").style.display = "none";
+
+            resultado.style.display = "block";
+
+            document.getElementById("btnConfirmar").style.display = "none";
+
+            document.getElementById("whatsBox").innerHTML = `
+        <div style="padding:30px;border-radius:12px;text-align:center">
+            <p style="font-size:24px;font-weight:500;margin-bottom:20px">
+                Localidade fora da área de atendimento.
+            </p>
+            <a href="https://wa.me/551124460812?text=Olá!%20Gostaria%20de%20fazer%20uma%20cotação%20fora%20de%20São%20Paulo.">
+                <button class="whatsapp">Solicitar cotação no WhatsApp</button>
+            </a>
+        </div>
+    `;
+
+            return;
+        }
+
+        document.querySelector("#resultado h3").style.display = "block";
+
+
+        /* MOSTRA RESUMO NORMAL */
+
+        document.querySelector(".enderecos").style.display = "flex";
+        document.querySelector(".infoResumo").style.display = "flex";
+        document.querySelector(".valorBox").style.display = "flex";
+        document.getElementById("whatsBox").innerHTML = "";
+
+        resultado.style.display = "block";
+        document.getElementById("btnConfirmar").style.display = "block";
+
+        /* DADOS */
+
+        let peso = Number(document.getElementById("peso").value);
+        let retorno = document.getElementById("retorno").checked;
+
+        /* RESUMO SUPERIOR */
+
+        document.getElementById("resumoVeiculo").innerText =
+            document.getElementById("veiculo").value;
+
+        document.getElementById("resumoDataColeta").innerText = formatarData(dataColeta);
+        document.getElementById("resumoDataEntrega").innerText = formatarData(dataEntrega);
+
+        /* BASE */
+
+        let base = tabela[localidadeEntrega];
+
+        /* CALCULO PESO */
+
+        let subtotal = peso <= 20 ? base : base * 1.5;
+
+        /* PARADAS */
+
+        let paradasColeta = document.querySelectorAll("#paradasColeta .parada-bloco").length;
+        let paradasEntrega = document.querySelectorAll("#paradasEntrega .parada-bloco").length;
+
+        let totalParadas = paradasColeta + paradasEntrega;
+
+        let valorParadas = base * 0.2 * totalParadas;
+
+        subtotal += valorParadas;
+
+        /* DESCONTO */
+
+        let desconto = subtotal * 0.2;
+        let total = subtotal - desconto;
+
+        /* RETORNO */
+
+        let valorRetorno = 0;
+
+        if (retorno) {
+            valorRetorno = total;
+            total = total * 2;
+
+            document.getElementById("linhaRetorno").style.display = "flex";
+            document.getElementById("valorRetorno").innerText = "R$ " + valorRetorno.toFixed(2);
+
+        } else {
+            document.getElementById("linhaRetorno").style.display = "none";
+        }
+
+        /* ENDEREÇOS */
+
+        let coleta = `<div class="linha-endereco">${document.getElementById("enderecoColeta").value} - ${localidadeColeta}</div>`;
+
+        document.querySelectorAll(".parada-coleta-endereco").forEach((e, i) => {
+            let local = document.querySelectorAll(".parada-coleta-localidade")[i];
+            coleta += `<div class="linha-endereco">${e.value} - ${local.value}</div>`;
+        });
+
+        let entregaFinal = `<div class="linha-endereco">${document.getElementById("enderecoEntrega").value} - ${localidadeEntrega}</div>`;
+
+        document.querySelectorAll(".parada-entrega-endereco").forEach((e, i) => {
+            let local = document.querySelectorAll(".parada-entrega-localidade")[i];
+            entregaFinal += `<div class="linha-endereco">${e.value} - ${local.value}</div>`;
+        });
+
+        document.getElementById("coleta").innerHTML = coleta;
+        document.getElementById("entrega").innerHTML = entregaFinal;
+
+        /* VALORES */
+
+        document.getElementById("subtotal").innerText = "R$ " + subtotal.toFixed(2);
+        document.getElementById("desconto").innerText = "- R$ " + desconto.toFixed(2);
+        document.getElementById("total").innerText = "R$ " + total.toFixed(2);
+
+    }
+
+    // BLOQUEAR DATAS ANTERIORES
+
+    function definirDataMinima() {
+
+        let hoje = new Date();
+
+        // formatar para yyyy-mm-dd
+        let ano = hoje.getFullYear();
+        let mes = String(hoje.getMonth() + 1).padStart(2, '0');
+        let dia = String(hoje.getDate()).padStart(2, '0');
+
+        let hojeFormatado = `${ano}-${mes}-${dia}`;
+
+        // aplicar nos campos
+        document.getElementById("dataColeta").min = hojeFormatado;
+        document.getElementById("dataEntrega").min = hojeFormatado;
+
+    }
+
+    // executar ao carregar
+    definirDataMinima();
+
+    function atualizarNumeracao(tipo) {
+
+        let container = document.getElementById(
+            tipo === "coleta" ? "paradasColeta" : "paradasEntrega"
+        );
+
+        let blocos = container.querySelectorAll(".parada-bloco");
+
+        blocos.forEach((bloco, index) => {
+            bloco.querySelector("b").innerText = "Parada " + (index + 1);
+        });
+
+        contadorParadas[tipo] = blocos.length;
+
+    }
+
+    function removerParada(botao, tipo) {
+
+        let bloco = botao.closest(".parada-bloco");
+        bloco.remove();
+
+        atualizarNumeracao(tipo);
+
+    }
+
+
+document.getElementById("btnConfirmar").addEventListener("click", function(){
+
+  let btn = document.getElementById("btnConfirmar");
+
+  btn.innerText = "Enviando...";
+  btn.disabled = true;
+  
+  let templateParams = {
+    nome: document.getElementById("nome").value,
+    telefone: document.getElementById("telefone").value,
+    email: document.getElementById("email").value,
+    empresa: document.getElementById("empresa").value,
+
+    veiculo: document.getElementById("veiculo").value,
+    dataColeta: document.getElementById("resumoDataColeta").innerText,
+    dataEntrega: document.getElementById("resumoDataEntrega").innerText,
+
+    tipoCarga: document.getElementById("tipoCarga").value,
+    peso: document.getElementById("peso").value,
+    quantidade: document.getElementById("quantidade").value,
+    dimensoes: document.getElementById("dimensoes").value,
+
+    coleta: document.getElementById("coleta").innerText,
+    entrega: document.getElementById("entrega").innerText,
+
+    subtotal: document.getElementById("subtotal").innerText,
+    retorno: document.getElementById("retorno").checked ? "Sim" : "Não",
+valorRetorno: document.getElementById("valorRetorno").innerText || "Não aplicado",
+    desconto: document.getElementById("desconto").innerText,
+    total: document.getElementById("total").innerText
+  };
+
+  emailjs.send("service_vlnxhq9", "template_h9ll67m", templateParams)
+  .then(function(response) {
+     alert("Pedido enviado com sucesso! Nossa equipe entrará em contato para confirmar a cotação e detalhes do serviço.");
+
+   btn.style.display = "none";
+   btn.innerText = "Agendar entrega econômica";
+   btn.disabled = false;
+  }, function(error) {
+     alert("Erro ao enviar. Tente novamente.");
+   console.log(error);
+
+   btn.innerText = "Agendar entrega econômica";
+   btn.disabled = false;
+  });
+
+});
+
+
+</script>
+
+<script>
+(function(){
+  emailjs.init("QWDqrhgTwIax2Dhdy"); // coloque sua chave aqui
+})();
+</script>
+
+    
+</body>
+</html>
