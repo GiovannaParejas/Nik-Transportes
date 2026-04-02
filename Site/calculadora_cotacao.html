@@ -113,19 +113,13 @@ input::placeholder {
     color: #3A3F4573;
 }
 
-/* padrão = cinza (placeholder) */
 select {
-    color: #3A3F4573;
+    color: #3A3F45;
 }
 
-/* quando NÃO tiver selecionado */
-select:invalid {
+/* deixa só o placeholder cinza */
+select option[value=""] {
     color: #3A3F4573;
-}
-
-/* quando selecionar algo válido */
-select:valid {
-    color: #000;
 }
 
 
@@ -1134,29 +1128,96 @@ selectParada.appendChild(outros);
 
     let veiculo = document.getElementById("veiculo").value;
 
+// 🔥 PRIMEIRO valida tudo
+if (!verificarCampos()) return;
+
+    
+
     // 🔥 REGRA UTILITÁRIO (NÃO CALCULA)
     if (veiculo === "utilitario") {
 
-        document.getElementById("resultado").style.display = "block";
+        let retorno = document.getElementById("retorno").checked;
 
-        document.querySelector("#resultado h3").style.display = "none";
-        document.querySelector(".enderecos").style.display = "none";
-        document.querySelector(".infoResumo").style.display = "none";
-        document.querySelector(".valorBox").style.display = "none";
+let textoParadasColeta = "";
+let textoParadasEntrega = "";
 
-        document.getElementById("whatsBox").innerHTML = `
-        <div style="padding:30px;border-radius:12px;text-align:center">
-            <p style="font-size:24px;font-weight:500;margin-bottom:20px">
-                Para utilitários, a cotação é feita diretamente com nossa equipe.
-            </p>
-            <a href="https://wa.me/551124460812?text=Olá!%20Gostaria%20de%20fazer%20uma%20cotação%20para%20utilitário.">
-                <button class="whatsapp">Solicitar cotação no WhatsApp</button>
-            </a>
-        </div>
-        `;
+// PARADAS DE COLETA
+document.querySelectorAll(".parada-coleta-endereco").forEach((e, i) => {
+    let local = document.querySelectorAll(".parada-coleta-localidade")[i];
+    textoParadasColeta += `Parada coleta ${i + 1}: ${e.value} - ${local.value}\n`;
+});
 
-        return; // 🔥 BLOQUEIA O RESTO
-    }
+// PARADAS DE ENTREGA
+document.querySelectorAll(".parada-entrega-endereco").forEach((e, i) => {
+    let local = document.querySelectorAll(".parada-entrega-localidade")[i];
+    textoParadasEntrega += `Parada entrega ${i + 1}: ${e.value} - ${local.value}\n`;
+});
+
+    document.getElementById("resultado").style.display = "block";
+
+    document.querySelector("#resultado h3").style.display = "none";
+    document.querySelector(".enderecos").style.display = "none";
+    document.querySelector(".infoResumo").style.display = "none";
+    document.querySelector(".valorBox").style.display = "none";
+
+    // 🔥 CAPTURA DOS DADOS
+    let nome = document.getElementById("nome").value;
+    let telefone = document.getElementById("telefone").value;
+    let empresa = document.getElementById("empresa").value;
+
+    let tipoCarga = document.getElementById("tipoCarga").value;
+    let peso = document.getElementById("peso").value;
+    let quantidade = document.getElementById("quantidade").value;
+
+    let coleta = document.getElementById("enderecoColeta").value + " - " + document.getElementById("localidadeColeta").value;
+    let entrega = document.getElementById("enderecoEntrega").value + " - " + document.getElementById("localidadeEntrega").value;
+
+    let dataColeta = document.getElementById("dataColeta").value;
+    let dataEntrega = document.getElementById("dataEntrega").value;
+
+    // 🔥 MONTA MENSAGEM
+let mensagem = `Olá! Gostaria de cotar um utilitário:
+
+Nome: ${nome}
+Telefone: ${telefone}
+Empresa: ${empresa}
+
+Tipo de carga: ${tipoCarga}
+Peso: ${peso} kg
+Quantidade: ${quantidade}
+
+Coleta: ${coleta}
+${textoParadasColeta ? textoParadasColeta : ""}
+
+Entrega: ${entrega}
+${textoParadasEntrega ? textoParadasEntrega : ""}
+
+Data coleta: ${dataColeta}
+Data entrega: ${dataEntrega}
+
+Retorno ao local de origem: ${retorno ? "Sim" : "Não"}
+`;
+
+    let mensagemEncoded = encodeURIComponent(mensagem);
+
+    document.getElementById("whatsBox").innerHTML = `
+    <div style="padding:30px;border-radius:12px;text-align:center">
+        <p style="font-size:24px;font-weight:500;margin-bottom:20px">
+            Para utilitários, a cotação é feita diretamente com nossa equipe.
+        </p>
+
+        <p style="font-size:16px;margin-bottom:20px;color:#555">
+            Seus dados já foram preenchidos automaticamente no WhatsApp 
+        </p>
+
+        <a href="https://wa.me/551124460812?text=${mensagemEncoded}">
+            <button class="whatsapp">Continuar no WhatsApp</button>
+        </a>
+    </div>
+    `;
+
+    return;
+}
 
     if (!verificarCampos()) return;
 
