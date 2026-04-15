@@ -1,0 +1,194 @@
+<div class="contato">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    .contato,
+    .contato * {
+        font-family: 'Montserrat', sans-serif;
+    }
+    .contato {
+      background: #1f3b57;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .contato .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .contato h2 {
+      margin-bottom: 5px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1f3b57;
+    }
+
+    .contato p {
+      margin-bottom: 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: #3A3F45;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field label {
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #3A3F45;
+      font-weight: 400;
+    }
+
+    input::placeholder,
+textarea::placeholder {
+  color: #3A3F4566;        /* cor do placeholder */
+  font-size: 14px;    /* tamanho */
+  font-weight: 400;   /* peso */
+}
+
+    .field.full {
+      grid-column: span 2;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    /* FOCO LARANJA */
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border: 2px solid #ff7a00;
+      box-shadow: 0 0 5px rgba(255, 122, 0, 0.4);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: none;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background: #ff7a00;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #e66b00;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: span 1;
+      }
+    }
+  </style>
+
+  <div class="container">
+    <h2>Prefere nos escrever?</h2>
+    <p>Informe seus dados e nossa equipe entrará em contato.</p>
+
+    <form id="formContato">
+      <div class="grid">
+
+        <div class="field">
+          <label for="nome" >Nome</label>
+          <input id="nome" placeholder="Digite o seu nome" type="text" name="nome" required>
+        </div>
+
+        <div class="field">
+          <label for="empresa">Empresa</label>
+          <input id="empresa" placeholder="Digite sua empresa" type="text" name="empresa">
+        </div>
+
+        <div class="field">
+          <label for="telefone">Telefone</label>
+          <input id="telefone" placeholder="Telefone (com DDD)" type="tel" name="telefone" required>
+        </div>
+
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input id="email" placeholder="Digite seu email" type="email" name="email" required>
+        </div>
+
+        <div class="field full">
+          <label for="assunto">Assunto</label>
+          <select id="assunto" name="assunto">
+            <option value="Cotação">Cotação</option>
+            <option value="Dúvida">Dúvida</option>
+            <option value="Sugestão">Sugestão</option>
+            <option value="Parceria">Parceria de negócios</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label for="mensagem">Mensagem</label>
+          <textarea id="mensagem" placeholder="Digite sua mensagem" name="mensagem" required></textarea>
+        </div>
+
+      </div>
+
+      <button type="submit">Enviar mensagem</button>
+    </form>
+  </div>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+  <script>
+    (function () {
+      emailjs.init("pfrAAK6gp9ha-gWLR");
+    })();
+
+    document.getElementById("formContato").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      emailjs.sendForm("service_uq5o1ba", "template_uj2zjey", this)
+        .then(() => {
+          alert("Mensagem enviada com sucesso!");
+          this.reset();
+        })
+        .catch((err) => {
+          alert("Erro ao enviar.");
+          console.log(err);
+        });
+    });
+  </script>
+
+</div>

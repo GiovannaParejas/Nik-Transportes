@@ -966,6 +966,10 @@ document.addEventListener("DOMContentLoaded", function () {
     selectColeta.appendChild(outros1);
     selectEntrega.appendChild(outros2);
 
+    document.getElementById("dataColeta").addEventListener("change", function() {
+    document.getElementById("dataEntrega").min = this.value;
+});
+
 });
 
     let contadorParadas = {
@@ -1131,7 +1135,34 @@ selectParada.appendChild(outros);
 // 🔥 PRIMEIRO valida tudo
 if (!verificarCampos()) return;
 
-    
+// 🔥 VALIDAÇÃO DE DATAS (ANTES DE QUALQUER COISA)
+
+let dataColetaInput = document.getElementById("dataColeta");
+let dataEntregaInput = document.getElementById("dataEntrega");
+
+let dataColeta = dataColetaInput.value;
+let dataEntrega = dataEntregaInput.value;
+
+// converter para Date (forma segura)
+let coletaDate = new Date(dataColeta + "T00:00:00");
+let entregaDate = new Date(dataEntrega + "T00:00:00");
+
+// 🔴 ENTREGA NÃO PODE SER ANTES DA COLETA
+if (entregaDate < coletaDate) {
+    alert("A data de entrega não pode ser anterior à data de coleta.");
+    dataEntregaInput.focus();
+    return;
+}
+
+// 🔴 REGRA DAS 17H
+let agora = new Date();
+let hoje = new Date().toISOString().split("T")[0];
+
+if (dataColeta === hoje && agora.getHours() >= 14) {
+    alert("Após as 17h, a coleta não pode ser agendada para hoje.");
+    dataColetaInput.focus();
+    return;
+}
 
     // 🔥 REGRA UTILITÁRIO (NÃO CALCULA)
     if (veiculo === "utilitario") {
@@ -1220,45 +1251,6 @@ Retorno ao local de origem: ${retorno ? "Sim" : "Não"}
 }
 
     if (!verificarCampos()) return;
-
-
-    /* REGRA DAS 17h */
-    let dataInput = document.getElementById("dataColeta");
-    let dataEntregaInput = document.getElementById("dataEntrega");
-
-    let dataSelecionada = dataInput.value;
-
-    let agora = new Date();
-    let hoje = agora.toISOString().split("T")[0];
-
-    let horaAtualMin = agora.getHours() * 60 + agora.getMinutes();
-    let limiteMin = 17 * 60;
-
-    if (dataSelecionada === hoje && horaAtualMin >= limiteMin) {
-
-        alert("Coletas após as 17h serão realizadas no próximo dia.");
-
-        let amanha = new Date();
-        amanha.setDate(amanha.getDate() + 1);
-
-        let ano = amanha.getFullYear();
-        let mes = String(amanha.getMonth() + 1).padStart(2, '0');
-        let dia = String(amanha.getDate()).padStart(2, '0');
-
-        let novaData = `${ano}-${mes}-${dia}`;
-
-        dataInput.value = novaData;
-        dataEntregaInput.value = novaData;
-    }
-
-    /* GARANTIR ENTREGA >= COLETA */
-    let dataColeta = dataInput.value;
-    let dataEntrega = dataEntregaInput.value;
-
-    if (dataEntrega < dataColeta) {
-        dataEntregaInput.value = dataColeta;
-        dataEntrega = dataColeta;
-    }
 
     /* LOCALIDADES */
     let localidadeColeta = document.getElementById("localidadeColeta").value;
